@@ -1,3 +1,4 @@
+/* $XdotOrg: xc/programs/xmodmap/exec.c,v 1.1.4.2.4.1 2004/03/04 17:49:16 eich Exp $ */
 /* $Xorg: exec.c,v 1.4 2001/02/09 02:05:56 xorgcvs Exp $ */
 /*
 
@@ -212,8 +213,13 @@ void
 PrintModifierMapping(XModifierKeymap *map, FILE *fp)
 {
     int i, k = 0;
+    int min_keycode, max_keycode, keysyms_per_keycode = 0;
 
-    fprintf (fp, 
+    XDisplayKeycodes (dpy, &min_keycode, &max_keycode);
+    XGetKeyboardMapping (dpy, min_keycode, (max_keycode - min_keycode + 1),
+			 &keysyms_per_keycode);
+
+    fprintf (fp,
     	     "%s:  up to %d keys per modifier, (keycodes in parentheses):\n\n", 
     	     ProgramName, map->max_keypermod);
     for (i = 0; i < 8; i++) {
@@ -222,8 +228,14 @@ PrintModifierMapping(XModifierKeymap *map, FILE *fp)
 	fprintf(fp, "%-10s", modifier_table[i].name);
 	for (j = 0; j < map->max_keypermod; j++) {
 	    if (map->modifiermap[k]) {
-		KeySym ks = XKeycodeToKeysym(dpy, map->modifiermap[k], 0);
-		char *nm = XKeysymToString(ks);
+		KeySym ks;
+		int index = 0;
+		char *nm;
+		do {
+		    ks = XKeycodeToKeysym(dpy, map->modifiermap[k], index);
+		    index++;
+		} while ( !ks && index < keysyms_per_keycode);
+		nm = XKeysymToString(ks);
 
 		fprintf (fp, "%s  %s (0x%0x)", (j > 0 ? "," : ""), 
 			 (nm ? nm : "BadKey"), map->modifiermap[k]);
