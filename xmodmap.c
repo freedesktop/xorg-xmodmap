@@ -116,6 +116,7 @@ static const char help_message[] =
 "    -pp                          print pointer map\n"
 "    -help                        print this usage message\n"
 "    -grammar                     print out short help on allowable input\n"
+"    -version                     print program version\n"
 "    -                            read standard input\n"
 "\n";
 
@@ -195,6 +196,11 @@ main(int argc, char *argv[])
 	    case 'h':			/* -help */
 	    case '?':
 		usage(0);
+	    case 'v':
+		if (strcmp(arg, "-version") == 0) {
+		    puts(PACKAGE_STRING);
+		    exit(0);
+		}
 	    }
 	}
     }
