@@ -44,7 +44,7 @@ XORG_DEFAULT_OPTIONS
 AC_CHECK_FUNCS([strncasecmp asprintf])
 
 # Checks for pkg-config packages
-PKG_CHECK_MODULES(XMODMAP, x11 xproto >= 7.0.17)
+PKG_CHECK_MODULES(XMODMAP, [x11 xproto >= 7.0.25])
 
 dnl Allow checking code with lint, sparse, etc.
 XORG_WITH_LINT
