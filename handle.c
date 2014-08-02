@@ -873,6 +873,9 @@ do_pointer(char *line, int len)
 		return;
 	    }
 	    strval = copy_to_scratch(line, n);
+	    if (strval == NULL)
+		/* copy_to_scratch already printed error message */
+		return;
 	    ok = parse_number (strval, &val);
 	    if (!ok || val >= MAXBUTTONCODES) {
 		badmsg ("value %s given for buttons list", strval);
